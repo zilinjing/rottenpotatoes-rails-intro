@@ -27,6 +27,7 @@ class MoviesController < ApplicationController
         # .to_sym converts the string to a symbol 'title' becomes :title
         @movies = @movies.order(@sort_by.to_sym)
       end
+    end
   end
 
   def new
