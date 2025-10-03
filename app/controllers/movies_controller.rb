@@ -7,7 +7,27 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    @all_ratings = Movie.all_ratings
+    # check if form was submitted with ratings
+    if params[:ratings].present?
+      @ratings_to_show = params[:ratings].keys
+    
+    # first visit OR when user unchecks everything
+    else
+      @ratings_to_show = @all_ratings
+    end 
+    
+    # Get the sort column from params
+    @sort_by = params[:sort_by]
+    # Get the movies to display based on selected ratings
+    @movies = Movie.with_ratings(@ratings_to_show)
+    if @sort_by.present?
+      # .order is an ActiveRecord method that sorts at the database level
+      if ['title', 'release_date'].include?(@sort_by)
+        # .to_sym converts the string to a symbol 'title' becomes :title
+        @movies = @movies.order(@sort_by.to_sym)
+      end
+    end
   end
 
   def new
